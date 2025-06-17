@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "required": [
+    "githubRepo"
+  ],
+  "properties": {
+    "githubRepo": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+$"
+    },
+    "ghaRunnerServiceAccountName": {
+      "type": "string",
+      "default": "gha-runner-sa"
+    },
+    "ghaRunnerReplicas": {
+      "type": "integer",
+      "default": 1,
+      "minimum": 1
+    },
+    "ghaRunnerName": {
+      "type": "string",
+      "default": "gha-runner"
+    },
+    "ghaRunnerLabels": {
+      "type": "array",
+      "default": []
+    },
+    "nodeSelector": {
+      "type": "object",
+      "default": {}
+    },
+    "tolerations": {
+      "type": "array",
+      "default": []
+    },
+    "setupAdditionalTools": {
+      "type": "array",
+      "default": []
+    },
+    "ghaRunnerGracefulStopTimeout": {
+      "type": "integer",
+      "default": 15,
+      "minimum": 10
+    }
+  }
+}

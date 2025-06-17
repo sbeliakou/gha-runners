@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Values.ghaRunnerServiceAccountName }}-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Values.ghaRunnerServiceAccountName }}-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.ghaRunnerServiceAccountName }}
+  namespace: {{ .Release.Namespace }}

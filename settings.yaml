@@ -1,0 +1,9 @@
+# Github Actions Controller Namespace
+gha-runner-controller-namespace: gha-runner-controller
+
+# Github Actions Runner Namespace
+gha-runner-namespace: gha-runner
+
+# Github Repo and Github Token must be set in the environment:
+# export GITHUB_REPO=your-org/your-repo
+# export GITHUB_TOKEN=your-github-pam-token

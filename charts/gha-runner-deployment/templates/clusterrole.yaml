@@ -1,0 +1,8 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.ghaRunnerServiceAccountName }}-clusterrole
+rules:
+- apiGroups: ["", "apps", "networking.k8s.io", "extensions", "autoscaling"]
+  resources: ["pods", "deployments", "services", "configmaps", "secrets", "ingresses", "serviceaccounts", "horizontalpodautoscalers", "namespaces"]
+  verbs: ["get", "watch", "list", "patch", "update", "delete", "create"]

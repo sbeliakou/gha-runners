@@ -1,0 +1,8 @@
+apiVersion: v2
+name: gha-runner
+description: Helm chart for deploying GitHub Actions Runner on Kubernetes
+version: 0.1.0
+appVersion: "1.0"
+maintainers:
+  - name: Siarhei Beliakou
+    email: sbeliakou@gmail.com

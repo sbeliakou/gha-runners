@@ -1,0 +1,29 @@
+# gha-runner-deployment chart
+
+{{ template "chart.description" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+# Requirements:
+
+The following components should be installed:
+- [Cert Manager](https://cert-manager.io/docs/)
+- [GitHub Actions Runner Controller (ARC)](https://github.com/actions/actions-runner-controller)
+
+## Installation
+
+```bash
+helm upgrade --install gha-runner-deployment charts/gha-runner-deployment \
+		--namespace "<NAMESPACE>" --create-namespace \
+		--set githubRepo="<GITHUB_REPO>"
+```
+
+## Uninstallation
+
+```bash
+helm uninstall gha-runner-deployment --namespace "<NAMESPACE>"
+```

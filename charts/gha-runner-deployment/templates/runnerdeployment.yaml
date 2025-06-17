@@ -1,0 +1,103 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: {{ .Values.ghaRunnerName }}
+spec:
+  replicas: {{ .Values.ghaRunnerReplicas }}
+  template:
+    spec:
+      repository: {{ .Values.githubRepo }}
+      serviceAccountName: {{ .Values.ghaRunnerServiceAccountName }}
+      automountServiceAccountToken: true
+{{- if .Values.ghaRunnerLabels }}
+      labels: 
+{{- range .Values.ghaRunnerLabels }}
+        - {{ . }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{- range $key, $value := .Values.nodeSelector }}
+        {{ $key }}: {{ $value }}
+{{- end }}
+{{- end}}
+
+{{- if .Values.tolerations }}
+      tolerations:
+{{- range .Values.tolerations }}
+        - key: {{ .key }}
+          effect: {{ .effect }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.setupAdditionalTools }}
+      initContainers:
+        - name: install-tools
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+{{- range .Values.setupAdditionalTools }}
+{{ . | trim | indent 14 }}
+{{- end }}
+          volumeMounts:
+            - name: tools-bin
+              mountPath: /usr/tools/bin
+
+      containers:
+        - name: docker
+          image: docker:dind
+          env:
+            - name: DOCKER_GROUP_GID
+              value: "1001"
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - |
+                    timeout "{{ .Values.ghaRunnerGracefulStopTimeout }}" /bin/sh -c '
+                      echo Prestop hook started; 
+                      while [ -f /runner/.runner ]; do 
+                        sleep 1; 
+                      done; 
+                      echo Waiting for dockerd to start; 
+                      while ! pgrep -x dockerd; do 
+                        sleep 1; 
+                      done; 
+                      echo Prestop hook stopped
+                    ' >/proc/1/fd/1 2>&1
+          securityContext:
+            privileged: true
+      
+        - name: runner
+          image: summerwind/actions-runner:latest
+          env:
+            - name: DOCKER_ENABLED
+              value: "true"
+            - name: DOCKERD_IN_RUNNER
+              value: "false"
+            - name: RUNNER_EPHEMERAL
+              value: "true"
+            - name: DOCKER_HOST
+              value: unix:///run/docker.sock
+            - name: PATH
+              value: /usr/tools/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          volumeMounts:
+            - mountPath: /usr/tools/bin
+              name: tools-bin
+        
+      volumes:
+        - name: work
+          emptyDir: {}
+        - name: dind-sock
+          emptyDir: {}
+        - name: dind-externals
+          emptyDir: {}
+        - name: tools-bin
+          emptyDir: {}
+{{- end }}
