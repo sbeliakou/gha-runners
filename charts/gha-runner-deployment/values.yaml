@@ -1,4 +1,4 @@
-# -- Github Repository
+# -- Github Repository (**REQUIRED**)
 githubRepo: OWNER/REPOSITORY
 
 # -- Runner Service Account Name
@@ -19,7 +19,7 @@ nodeSelector:
   kubernetes.io/os: linux
 
 # -- Tolerations for the Runner Pods
-tolerations: {}
+tolerations: []
   # - key: node-role.kubernetes.io/worker
   #   effect: NoSchedule
 
@@ -35,3 +35,46 @@ setupAdditionalTools:
 
 # -- Graceful Stop Timeout for the Runner Pods
 ghaRunnerGracefulStopTimeout: 15
+
+# -- Runner RBAC Rules (**TOO MUCH FOR PRODUCTION!**)
+# @default -- `[.. revise for your cases ..]`
+ghaRunnerClusterRoleRules:
+  # Manage cronjobs in all namespaces
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Manage service accounts
+  - apiGroups: [""]
+    resources: ["serviceaccounts"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Manage configmaps
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Manage namespaces (careful: this is very powerful)
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # ClusterRole and ClusterRoleBinding management
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["clusterroles", "clusterrolebindings"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Manage pods, nodes, events, persistent volumes and claims
+  - apiGroups: [""]
+    resources: ["events", "nodes", "nodes/proxy", "persistentvolumeclaims", "persistentvolumes", "pods/exec", "replicationcontrollers"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]
+
+  # Manage deployments, daemonsets, replicasets, and statefulsets
+  - apiGroups: ["apps"]
+    resources: ["daemonsets", "replicasets", "statefulsets"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]
+
+  # Manage storageclasses
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]

@@ -3,6 +3,8 @@ kind: ClusterRole
 metadata:
   name: {{ .Values.ghaRunnerServiceAccountName }}-clusterrole
 rules:
-- apiGroups: ["", "apps", "networking.k8s.io", "extensions", "autoscaling"]
-  resources: ["pods", "deployments", "services", "configmaps", "secrets", "ingresses", "serviceaccounts", "horizontalpodautoscalers", "namespaces"]
-  verbs: ["get", "watch", "list", "patch", "update", "delete", "create"]
+{{- range .Values.ghaRunnerClusterRoleRules }}
+  - apiGroups: {{ toYaml .apiGroups | nindent 4 }}
+    resources: {{ toYaml .resources | nindent 4 }}
+    verbs: {{ toYaml .verbs | nindent 4 }}
+{{- end }}
