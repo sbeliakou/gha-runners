@@ -8,12 +8,12 @@ Helm chart for deploying GitHub Actions Runner on Kubernetes
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| **githubRepo** | string | `"OWNER/REPOSITORY"` | Github Repository, **required** |
 | ghaRunnerGracefulStopTimeout | int | `15` | Graceful Stop Timeout for the Runner Pods |
 | ghaRunnerLabels | list | `["k8s-sbeliakou"]` | Runner Labels |
 | ghaRunnerName | string | `"k8s-gha-runner"` |  |
 | ghaRunnerReplicas | int | `1` | Runner Replicas |
 | ghaRunnerServiceAccountName | string | `"gha-runner-sa"` | Runner Service Account Name |
-| githubRepo | string | `"ORGANIZATION/REPOSITORY"` | Github Repository in a format "ORG/REPO" |
 | nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node Selector Rules |
 | setupAdditionalTools | list | `[script,script,...]` | Additional Tools to be installed in the Runner Pods |
 | tolerations | object | `{}` | Tolerations for the Runner Pods |

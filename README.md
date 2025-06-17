@@ -1,4 +1,4 @@
-# Kubernetes Addons Management
+# Deploying Github Runner on Kubernetes
 
 This repository provides tools and manifests to help you install and manage key solution components in your Kubernetes cluster, including:
 
@@ -75,21 +75,22 @@ curl -X POST \
 
 ### Getting Help
 
-```sh
-$ make help
+```bash
+make help
+
 Usage:
   make cert-manager
   make gha-runner-controller
   make gha-runner-deployment
 
 Targets:
-  help                                    Help
-  cert-manager                            Deploy Certificate Manager
-  cert-manager-uninstall                  Uninstall Certificate Manager
-  gha-runner-controller                   Deploy Github Runner Controller
-  gha-runner-controller-uninstall         Uninstall Github Runner Controller
-  gha-runner-deployment                   Install Github Runners
-  gha-runner-deployment-uninstall         Uninstall Github Runners Deployment
+  help                                     Help
+  cert-manager                             Deploy Certificate Manager
+  cert-manager-uninstall                   Uninstall Certificate Manager
+  gha-runner-controller                    Deploy Github Runner Controller
+  gha-runner-controller-uninstall          Uninstall Github Runner Controller
+  gha-runner-deployment                    Install Github Runners
+  gha-runner-deployment-uninstall          Uninstall Github Runners Deployment
 
 Recommended flow:
   Deployment:

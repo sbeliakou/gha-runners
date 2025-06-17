@@ -1,5 +1,5 @@
 # -- Github Repository
-githubRepo: ORGANIZATION/REPOSITORY
+githubRepo: OWNER/REPOSITORY
 
 # -- Runner Service Account Name
 ghaRunnerServiceAccountName: gha-runner-sa
