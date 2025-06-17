@@ -41,7 +41,7 @@ ghaRunnerGracefulStopTimeout: 15
 ghaRunnerClusterRoleRules:
   # Manage cronjobs in all namespaces
   - apiGroups: ["batch"]
-    resources: ["cronjobs"]
+    resources: ["jobs", "cronjobs"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
   # Manage service accounts
@@ -78,3 +78,8 @@ ghaRunnerClusterRoleRules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["storageclasses"]
     verbs: ["get", "list", "watch", "create", "update", "delete"]
+
+  # Manage Services
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
