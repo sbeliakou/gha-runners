@@ -25,61 +25,79 @@ tolerations: []
 
 # -- Additional Tools to be installed in the Runner Pods
 # @default -- `[script,script,...]`
-setupAdditionalTools:
-  - |
-    curl -L "https://dl.k8s.io/release/v1.30.13/bin/linux/amd64/kubectl" -o /usr/tools/bin/kubectl
-    chmod +x /usr/tools/bin/kubectl
-  - |
-    curl -L "https://github.com/stedolan/jq/releases/download/jq-1.8.0/jq-linux64"  -o /usr/tools/bin/jq
-    chmod +x /usr/tools/bin/jq
+setupAdditionalTools: []
+  # - |
+  #   curl -L "https://dl.k8s.io/release/v1.30.13/bin/linux/amd64/kubectl" -o /usr/tools/bin/kubectl
+  #   chmod +x /usr/tools/bin/kubectl
+  # - |
+  #   curl -L "https://github.com/stedolan/jq/releases/download/jq-1.8.0/jq-linux64"  -o /usr/tools/bin/jq
+  #   chmod +x /usr/tools/bin/jq
 
 # -- Graceful Stop Timeout for the Runner Pods
 ghaRunnerGracefulStopTimeout: 15
 
 # -- Runner RBAC Rules (**TOO MUCH FOR PRODUCTION!**)
 # @default -- `[.. revise for your cases ..]`
+# Developed for running CSI e2e tests in the Kubernetes cluster.
 ghaRunnerClusterRoleRules:
-  # Manage cronjobs in all namespaces
+  # Manage jobs and cronjobs
   - apiGroups: ["batch"]
-    resources: ["jobs", "cronjobs"]
+    resources: 
+      - "jobs"
+      - "cronjobs"
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
-  # Manage service accounts
-  - apiGroups: [""]
-    resources: ["serviceaccounts"]
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-
-  # Manage configmaps
-  - apiGroups: [""]
-    resources: ["configmaps", "secrets"]
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-
-  # Manage namespaces (careful: this is very powerful)
-  - apiGroups: [""]
-    resources: ["namespaces"]
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-
-  # ClusterRole and ClusterRoleBinding management
+  # Manage clusterroles and bindings
   - apiGroups: ["rbac.authorization.k8s.io"]
-    resources: ["clusterroles", "clusterrolebindings"]
+    resources:
+      - "clusterroles"
+      - "clusterrolebindings"
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-  
-  # Manage pods, nodes, events, persistent volumes and claims
-  - apiGroups: [""]
-    resources: ["events", "nodes", "nodes/proxy", "persistentvolumeclaims", "persistentvolumes", "pods/exec", "replicationcontrollers"]
-    verbs: ["get", "list", "watch", "create", "update", "delete"]
 
+  # Additional resources required by test runner
+  # (namespaces, service accounts, configmaps, secrets, events, nodes, pods, etc.)
+  - apiGroups: [""]
+    resources:
+      - "namespaces"
+      - "serviceaccounts"
+      - "configmaps"
+      - "secrets"
+      - "events"
+      - "nodes"
+      - "nodes/proxy"
+      - "persistentvolumeclaims"
+      - "persistentvolumes"
+      - "pods"
+      - "pods/ephemeralcontainers"
+      - "pods/attach"
+      - "pods/binding"
+      - "pods/eviction"
+      - "pods/portforward"
+      - "pods/proxy"
+      - "pods/exec"
+      - "pods/status"
+      - "replicationcontrollers"
+      - "replicationcontrollers/scale"
+      - "replicationcontrollers/status"
+      - "services"
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Additional permissions for logging and monitoring
+  - apiGroups: [""]
+    resources: 
+    - "pods/log"
+    verbs: ["get", "list", "watch"]
+  
   # Manage deployments, daemonsets, replicasets, and statefulsets
   - apiGroups: ["apps"]
-    resources: ["daemonsets", "replicasets", "statefulsets"]
-    verbs: ["get", "list", "watch", "create", "update", "delete"]
+    resources:
+      - "daemonsets"
+      - "replicasets"
+      - "statefulsets"
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
-  # Manage storageclasses
+  # Manage storage classes
   - apiGroups: ["storage.k8s.io"]
-    resources: ["storageclasses"]
-    verbs: ["get", "list", "watch", "create", "update", "delete"]
-
-  # Manage Services
-  - apiGroups: [""]
-    resources: ["services"]
+    resources:
+      - "storageclasses"
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
